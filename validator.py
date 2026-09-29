@@ -1,9 +1,10 @@
 import numpy as np
 
-class InputValidator:
+
+class inputValidation:
     @staticmethod
-    def validate_string(value):
-        """Memvalidasi bahwa input adalah string dan tidak kosong."""
+    def ivString(value):
+        """Memvalidasi bahwa input berupa string dan tidak kosong."""
         if not isinstance(value, str):
             raise ValueError("Input harus berupa string.")
         if not value.strip():
@@ -11,8 +12,8 @@ class InputValidator:
         return value
 
     @staticmethod
-    def validate_matrix(value):
-        """Memvalidasi bahwa input adalah matriks 3x3 berisi angka."""
+    def ivMatrix(value):
+        """Memvalidasi bahwa input berupa matriks 3x3 berisi angka."""
         if not isinstance(value, list):
             raise ValueError("Matriks harus berupa list.")
 
@@ -22,14 +23,13 @@ class InputValidator:
         for row in value:
             if not isinstance(row, list):
                 raise ValueError("Setiap baris matriks harus berupa list.")
-            
+
             if len(row) != 3:
                 raise ValueError("Setiap baris harus memiliki 3 elemen.")
-            
+
             for element in row:
-                # Menggunakan (int, float) agar mendukung desimal
                 if not isinstance(element, (int, float)):
-                    raise ValueError("Tiap elemen matriks harus berupa angka (int/float).")
+                    raise ValueError("Tiap elemen matriks harus berupa angka.")
         return value
 
 
@@ -56,18 +56,18 @@ def verify_result(service, request_data, server_result):
         elif service == "MATRIX_3X3":
             if not isinstance(server_result, dict):
                 return False
-            
+
             mat = np.array(request_data, dtype=float)
             expected_det = float(np.linalg.det(mat))
-            
+
             server_det = server_result.get("determinant")
             server_inv = server_result.get("inverse")
 
-            # Cek kebenaran determinan (toleransi presisi desimal)
+            # Cek determinan dengan toleransi presisi desimal
             if server_det is None or not np.isclose(expected_det, server_det, atol=1e-3):
                 return False
 
-            # Cek kebenaran invers matriks
+            # Cek invers matriks
             if np.isclose(expected_det, 0):
                 return server_inv is None
             else:
