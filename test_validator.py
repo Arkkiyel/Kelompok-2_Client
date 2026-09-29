@@ -1,10 +1,8 @@
 import unittest
 from validator import verify_result, inputValidation
 
-
 class TestValidator(unittest.TestCase):
 
-    # --- Pengujian Validasi Hasil Server (verify_result) ---
     def test_char_count(self):
         self.assertTrue(verify_result("CHAR_COUNT", "Hello World", 11))
         self.assertFalse(verify_result("CHAR_COUNT", "Hello World", 5))
@@ -27,14 +25,11 @@ class TestValidator(unittest.TestCase):
         correct_inv = [[-24.0, 18.0, 5.0], [20.0, -15.0, -4.0], [-5.0, 4.0, 1.0]]
         correct_resp = {"determinant": correct_det, "inverse": correct_inv}
 
-        # Kasus benar
         self.assertTrue(verify_result("MATRIX_3X3", mat, correct_resp))
 
-        # Kasus determinan salah
         wrong_resp = {"determinant": 99.0, "inverse": correct_inv}
         self.assertFalse(verify_result("MATRIX_3X3", mat, wrong_resp))
 
-    # --- Pengujian Validasi Input Pengguna (inputValidation) ---
     def test_input_validation_string(self):
         self.assertEqual(inputValidation.ivString("Halo"), "Halo")
         with self.assertRaises(ValueError):
@@ -46,14 +41,10 @@ class TestValidator(unittest.TestCase):
         valid_mat = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         self.assertEqual(inputValidation.ivMatrix(valid_mat), valid_mat)
 
-        # Matriks bukan 3x3
         with self.assertRaises(ValueError):
             inputValidation.ivMatrix([[1, 2], [3, 4]])
-
-        # Elemen mengandung string
         with self.assertRaises(ValueError):
             inputValidation.ivMatrix([[1, "a", 3], [4, 5, 6], [7, 8, 9]])
-
 
 if __name__ == "__main__":
     unittest.main()

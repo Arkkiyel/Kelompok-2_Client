@@ -1,10 +1,8 @@
 import numpy as np
 
-
 class inputValidation:
     @staticmethod
     def ivString(value):
-        """Memvalidasi bahwa input berupa string dan tidak kosong."""
         if not isinstance(value, str):
             raise ValueError("Input harus berupa string.")
         if not value.strip():
@@ -13,7 +11,6 @@ class inputValidation:
 
     @staticmethod
     def ivMatrix(value):
-        """Memvalidasi bahwa input berupa matriks 3x3 berisi angka."""
         if not isinstance(value, list):
             raise ValueError("Matriks harus berupa list.")
 
@@ -32,12 +29,7 @@ class inputValidation:
                     raise ValueError("Tiap elemen matriks harus berupa angka.")
         return value
 
-
 def verify_result(service, request_data, server_result):
-    """
-    Memvalidasi apakah jawaban dari server sudah benar untuk masing-masing layanan.
-    Mengembalikan True jika BENAR, dan False jika SALAH.
-    """
     try:
         if service == "CHAR_COUNT":
             return len(str(request_data)) == server_result
@@ -63,11 +55,9 @@ def verify_result(service, request_data, server_result):
             server_det = server_result.get("determinant")
             server_inv = server_result.get("inverse")
 
-            # Cek determinan dengan toleransi presisi desimal
             if server_det is None or not np.isclose(expected_det, server_det, atol=1e-3):
                 return False
 
-            # Cek invers matriks
             if np.isclose(expected_det, 0):
                 return server_inv is None
             else:

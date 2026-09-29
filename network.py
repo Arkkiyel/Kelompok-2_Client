@@ -12,7 +12,7 @@ def connect_to_server(ip, port):
         return client_socket
         
     except ConnectionRefusedError:
-        print("[-] Connection failed: Connection refused (Server might not be running).")
+        print("[-] Connection failed: Connection refused.")
         return None
     except socket.timeout:
         print("[-] Connection failed: Connection timed out.")
