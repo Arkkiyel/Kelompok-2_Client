@@ -32,7 +32,7 @@ def send_and_request(client_socket, pesan_dict):
     """
     try:
         pesan_json = json.dumps(pesan_dict)
-        client_socket.sendall(pesan_json.encode('utf-8')
+        client_socket.sendall(pesan_json.encode('utf-8'))
         respons_byte = client_socket.recv(4096)
         if not respons_byte:
             print("[-] Connection is closed by server.")
