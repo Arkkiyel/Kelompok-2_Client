@@ -32,7 +32,7 @@ def send_and_request(client_socket, pesan_dict):
     """
     try:
         pesan_json = json.dumps(pesan_dict)
-        client_socket.sendall(pesan_json.encode('utf-8'))
+        client_socket.sendall(pesan_json.encode('utf-8')
         respons_byte = client_socket.recv(4096)
         if not respons_byte:
             print("[-] Connection is closed by server.")
@@ -51,3 +51,24 @@ def send_and_request(client_socket, pesan_dict):
     except Exception as e:
         print(f"[-] Error: {e}")
         return None
+
+def send_ack(client_socket, service, is_correct):
+    """
+    Fungsi khusus untuk mengirim Acknowledgement (ACK/NACK) ke server
+    setelah klien memverifikasi kebenaran jawaban server
+    """
+    pesan_ack = {
+        "tipe": "ack",
+        "service": layanan,
+        "valid": is_correct
+    }
+    
+    try:
+        pesan_json = json.dumps(pesan_ack)
+        client_socket.sendall(pesan_json.encode('utf-8'))
+        
+        status_teks = "BENAR (ACK)" if is_benar else "SALAH (NACK)"
+        print(f"[+] Status evaluasi dikirim ke server: Layanan {service} -> {status_teks}")
+        
+    except Exception as e:
+        print(f"[-] Failed to send Acknowledgement: {e}")
