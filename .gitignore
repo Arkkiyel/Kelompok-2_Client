@@ -1,0 +1,24 @@
+# Cache dari Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment (jika ada yang memakai venv)
+venv/
+.venv/
+env/
+.env
+
+# File sistem operasi (Windows & macOS)
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Folder pengaturan Text Editor / IDE (VS Code, PyCharm, dll)
+.vscode/
+.idea/
+*.swp
+
+# File log atau log debugging
+*.log
