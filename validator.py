@@ -45,7 +45,7 @@ def verify_result(service, request_data, server_result):
         elif service == "WORD_COUNT":
             return len(str(request_data).split()) == server_result
 
-        elif service == "REVERSE_STR":
+        elif service == "REVERSE_STRING":
             return str(request_data)[::-1] == server_result
 
         elif service == "REMOVE_VOWELS":

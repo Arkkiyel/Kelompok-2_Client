@@ -2,73 +2,52 @@ import socket
 import json
 
 def connect_to_server(ip, port):
-    """
-    Membuka koneksi TCP ke server
-    """
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.settimeout(10.0) 
     
     try:
         client_socket.connect((ip, port))
-        print(f"[+] Connected to server {ip}:{port}")
-    
+        print(f"[+] Successfully connected to server {ip}:{port}")
         client_socket.settimeout(None) 
         return client_socket
         
     except ConnectionRefusedError:
-        print("[-] Failed to connect: Server declined the request. Make sure the server is already running")
+        print("[-] Connection failed: Connection refused (Server might not be running).")
         return None
     except socket.timeout:
-        print("[-] Failed to connect: Server Timeout.")
+        print("[-] Connection failed: Connection timed out.")
         return None
     except Exception as e:
-        print(f"[-] Network Error: {e}")
+        print(f"[-] A network error occurred: {e}")
         return None
 
-def send_and_request(client_socket, pesan_dict):
-    """
-    Mengirim data dari dictionary Python, diubah ke JSON, dikirim ke server.
-    Lalu menerima balasan dari server, diparse dari JSON kembali menjadi dictionary.
-    """
+def send_and_receive(client_socket, message_dict):
     try:
-        pesan_json = json.dumps(pesan_dict)
-        client_socket.sendall(pesan_json.encode('utf-8')
-        respons_byte = client_socket.recv(4096)
-        if not respons_byte:
-            print("[-] Connection is closed by server.")
-            return None
-        respons_string = respons_byte.decode('utf-8')
-        respons_dict = json.loads(respons_string)
+        message_json = json.dumps(message_dict)
+        client_socket.sendall(message_json.encode('utf-8'))
         
-        return respons_dict
+        response_bytes = client_socket.recv(4096)
+        
+        if not response_bytes:
+            print("[-] Connection closed by the server.")
+            return None
+            
+        return json.loads(response_bytes.decode('utf-8'))
         
     except ConnectionResetError:
-        print("[-] Error: Connection is suddenly closed by server.")
+        print("[-] Error: Connection was forcibly closed by the server.")
         return None
     except json.JSONDecodeError:
-        print("[-] Error: Response isn't JSON.")
+        print("[-] Error: Received invalid JSON format from the server.")
         return None
     except Exception as e:
-        print(f"[-] Error: {e}")
+        print(f"[-] A communication error occurred: {e}")
         return None
 
-def send_ack(client_socket, service, is_correct):
-    """
-    Fungsi khusus untuk mengirim Acknowledgement (ACK/NACK) ke server
-    setelah klien memverifikasi kebenaran jawaban server
-    """
-    pesan_ack = {
-        "tipe": "ack",
-        "service": layanan,
-        "valid": is_correct
-    }
-    
+def close_connection(client_socket):
     try:
-        pesan_json = json.dumps(pesan_ack)
-        client_socket.sendall(pesan_json.encode('utf-8'))
-        
-        status_teks = "BENAR (ACK)" if is_benar else "SALAH (NACK)"
-        print(f"[+] Status evaluasi dikirim ke server: Layanan {service} -> {status_teks}")
-        
+        if client_socket:
+            client_socket.close()
+            print("[!] Connection closed safely.")
     except Exception as e:
-        print(f"[-] Failed to send Acknowledgement: {e}")
+        print(f"[-] Error while closing the connection: {e}")
