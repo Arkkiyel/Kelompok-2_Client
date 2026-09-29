@@ -4,7 +4,6 @@ import numpy as np
 class inputValidation:
     @staticmethod
     def ivString(value):
-        """Memvalidasi bahwa input berupa string dan tidak kosong."""
         if not isinstance(value, str):
             raise ValueError("Input harus berupa string.")
         if not value.strip():
@@ -13,20 +12,12 @@ class inputValidation:
 
     @staticmethod
     def ivMatrix(value):
-        """Memvalidasi bahwa input berupa matriks 3x3 berisi angka."""
-        if not isinstance(value, list):
-            raise ValueError("Matriks harus berupa list.")
-
-        if len(value) != 3:
-            raise ValueError("Matriks harus memiliki 3 baris.")
+        if not isinstance(value, list) or len(value) != 3:
+            raise ValueError("Matriks harus berupa list 3 baris.")
 
         for row in value:
-            if not isinstance(row, list):
-                raise ValueError("Setiap baris matriks harus berupa list.")
-
-            if len(row) != 3:
-                raise ValueError("Setiap baris harus memiliki 3 elemen.")
-
+            if not isinstance(row, list) or len(row) != 3:
+                raise ValueError("Setiap baris matriks harus berupa list 3 elemen.")
             for element in row:
                 if not isinstance(element, (int, float)):
                     raise ValueError("Tiap elemen matriks harus berupa angka.")
@@ -34,10 +25,6 @@ class inputValidation:
 
 
 def verify_result(service, request_data, server_result):
-    """
-    Memvalidasi apakah jawaban dari server sudah benar untuk masing-masing layanan.
-    Mengembalikan True jika BENAR, dan False jika SALAH.
-    """
     try:
         if service == "CHAR_COUNT":
             return len(str(request_data)) == server_result
@@ -45,7 +32,7 @@ def verify_result(service, request_data, server_result):
         elif service == "WORD_COUNT":
             return len(str(request_data).split()) == server_result
 
-        elif service == "REVERSE_STRING":
+        elif service == "REVERSE_STRING":  # Disesuaikan dengan server
             return str(request_data)[::-1] == server_result
 
         elif service == "REMOVE_VOWELS":
@@ -63,11 +50,9 @@ def verify_result(service, request_data, server_result):
             server_det = server_result.get("determinant")
             server_inv = server_result.get("inverse")
 
-            # Cek determinan dengan toleransi presisi desimal
             if server_det is None or not np.isclose(expected_det, server_det, atol=1e-3):
                 return False
 
-            # Cek invers matriks
             if np.isclose(expected_det, 0):
                 return server_inv is None
             else:
