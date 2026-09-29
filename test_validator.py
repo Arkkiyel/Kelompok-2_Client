@@ -13,9 +13,9 @@ class TestValidator(unittest.TestCase):
         self.assertTrue(verify_result("WORD_COUNT", "Jaringan Komputer TCP", 3))
         self.assertFalse(verify_result("WORD_COUNT", "Jaringan Komputer TCP", 5))
 
-    def test_reverse_str(self):
-        self.assertTrue(verify_result("REVERSE_STR", "Python", "nohtyP"))
-        self.assertFalse(verify_result("REVERSE_STR", "Python", "Python"))
+    def test_reverse_string(self):
+        self.assertTrue(verify_result("REVERSE_STRING", "Python", "nohtyP"))
+        self.assertFalse(verify_result("REVERSE_STRING", "Python", "Python"))
 
     def test_remove_vowels(self):
         self.assertTrue(verify_result("REMOVE_VOWELS", "Jaringan Komputer", "Jrngn Kmptr"))
